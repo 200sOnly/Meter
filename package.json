@@ -13,7 +13,7 @@
   "dependencies": {
     "applicationinsights-js": "^1.0.20"
   },
-  "main": "dist/index.js",
+  "main": "dist/app-meter.js",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
