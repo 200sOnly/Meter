@@ -1,0 +1,30 @@
+{
+  "name": "app-meter",
+  "version": "0.0.5",
+  "description": "Application Insights wrapper for vue.js framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/200sOnly/Meter.git"
+  },
+  "dependencies": {
+    "applicationinsights-js": "^1.0.20"
+  },
+  "keywords": [
+    "vue",
+    "vuejs",
+    "vue.js",
+    "application",
+    "insights",
+    "application insights",
+    "analytics",
+    "app-insights",
+    "app insights",
+    "azure"
+  ],
+  "author": "Abhishek Mishra",
+  "license": "MIT"
+}
