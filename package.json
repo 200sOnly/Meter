@@ -13,7 +13,7 @@
   "dependencies": {
     "applicationinsights-js": "^1.0.20"
   },
-  "main": "dist/app-meter.js",
+  "main": "dist/index.js",
   "devDependencies": {
     "@babel/cli": "^7.8.3",
     "@babel/core": "^7.8.3",
