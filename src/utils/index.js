@@ -9,7 +9,7 @@ function setupPageTracking(applicationName, router) {
     next();
   });
 
-  router.afterEach(route => {
+  router.afterEach((route) => {
     const name = `${baseName} / ${route.name}`;
     const url = `${window.location.protocol}//${window.location.host}${route.fullPath}`;
     AppInsights.stopTrackPage(name, url);
@@ -57,7 +57,6 @@ function trackEventMethod(payload, Tracking) {
     }
   }
 }
-
 function trackException(error) {
   try {
     AppInsights.trackException(error);
@@ -96,7 +95,7 @@ function stopTrackEvent(event) {
   try {
     const data = { ...event };
     const attrs = ['req', 'res', 'config'];
-    attrs.forEach(element => {
+    attrs.forEach((element) => {
       if (element in data) {
         data[element] =
           (typeof data[element] !== 'object'
@@ -112,6 +111,43 @@ function stopTrackEvent(event) {
     /* eslint-enable no-console */
   }
 }
+function setUserContextMethod(payload) {
+  const { accountId = 0, storeInCookie = false } = payload;
+  let { authenticatedUserId } = payload;
+  authenticatedUserId = authenticatedUserId.replace(/[,;=| ]+/g, '_');
+  AppInsights.setAuthenticatedUserContext(
+    authenticatedUserId,
+    accountId,
+    storeInCookie
+  );
+}
+function clearUserContextMethod() {
+  AppInsights.clearAuthenticatedUserContext();
+}
+function dependencyMethod(payload) {
+  const { status: resStatus } = payload.request;
+  let { response: resBody = '' } = payload.request;
+  const { url: reqUrl, method: reqMethod, data: reqBody = '' } = payload.config;
+  const { CKey: cKey } = payload.config.headers;
+  const webResBodyString = 'doctype html';
+  if (resBody && resBody?.toLowerCase()?.includes(webResBodyString)) {
+    resBody = null;
+  } else {
+    resBody = JSON.stringify(resBody);
+  }
+  const id = `M-${Math.random().toString(36).slice(-6)}`;
+  const data = JSON.stringify({ reqBody, resBody, cKey });
+
+  AppInsights.trackDependencyData({
+    id,
+    responseCode: resStatus,
+    absoluteUrl: `${reqMethod.toUpperCase()} ${reqUrl}`,
+    name: `${reqMethod.toUpperCase()} ${reqUrl}`,
+    success: false,
+    method: reqMethod,
+    data,
+  });
+}
 
 export {
   setupPageTracking,
@@ -122,5 +158,8 @@ export {
   startTrackPage,
   stopTrackPage,
   startTrackEvent,
-  stopTrackEvent
+  stopTrackEvent,
+  setUserContextMethod,
+  clearUserContextMethod,
+  dependencyMethod,
 };

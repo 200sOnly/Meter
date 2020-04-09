@@ -83,6 +83,37 @@ this.$meter.trackEvent({
 });
 ```
 
-## Options
 
-Coming Soon
+<a name="setAuthenticatedUserContext"></a>
+### setUserContext
+
+To tie all requests, events, pageView data to an authenticated user.
+
+Set the authenticated user id and the account id once you have identified a specific signed-in user.
+
+```js
+this.$meter.setUserContext({authenticatedUserId, 
+                            accountId, 
+                            storeInCookie})
+```
+
+
+
+The method will only set the `authenticatedUserId` and `accountId` for all events in the current page view. To set them for all events within the whole session, you should either call this method on every page view or set `storeInCookie = true`.
+
+ | Parameter             | Type   | Description                                                                                                                          |
+ | --------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+ | `authenticatedUserId` | string | **Required**<br>An id that uniquely identifies a user of your app. No spaces, comma, semicolon, equals or vertical bar.              |
+ | `accountId?`          | string | **Optional**<br>An optional account id, if your app groups users into accounts. No spaces, comma, semicolon, equals or vertical bar. |
+
+In the portal, this will add to the count of authenticated users. Authenticated users provide a more reliable count of the number of real users than the count of anonymous users.
+
+The authenticated user id will be available as part of the context of the telemetry sent to the portal, so that you can filter and search on it. It will also be saved as a cookie and sent to the server, where the server SDK (if installed) will attach it to server telemetry.
+
+### clearUserContext
+
+```js
+this.$meter.clearUserContext()
+```
+Clears the authenticated user id and the account id from the user context, and clears the associated cookie.
+
