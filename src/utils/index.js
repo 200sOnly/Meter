@@ -1,16 +1,25 @@
 import { AppInsights } from 'applicationinsights-js';
 
 async function setupPageTracking(applicationName, router) {
-  const browsingMode = (await isPrivateMode()) ? '(Private) - ' : '';
-  const baseName = `${browsingMode}${applicationName || '(Vue App)'}`;
+  let isPrivate;
+  try {
+    isPrivate = await isPrivateMode();
+  } catch (e) {
+    isPrivate = false;
+  }
+  const baseName = isPrivate
+    ? `(Private) ${applicationName || '(Vue App)'}`
+    : `${applicationName || '(Vue App)'}`;
 
   router.beforeEach((route, from, next) => {
     const name = `${baseName} / ${route.name}`;
+    console.log(name);
     AppInsights.startTrackPage(name);
     next();
   });
 
   router.afterEach((route) => {
+    console.log(name);
     const name = `${baseName} / ${route.name}`;
     const url = `${window.location.protocol}//${window.location.host}${route.fullPath}`;
     AppInsights.stopTrackPage(name, url);
