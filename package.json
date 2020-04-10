@@ -1,6 +1,6 @@
 {
   "name": "app-meter",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Application Insights wrapper for vue.js framework",
   "scripts": {
     "build": "npx babel src --out-dir dist",
