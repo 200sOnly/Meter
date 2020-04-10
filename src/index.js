@@ -1,5 +1,12 @@
 import { AppInsights } from 'applicationinsights-js';
-import { setupPageTracking, trackEventMethod, trackException } from './utils';
+import {
+  setupPageTracking,
+  trackEventMethod,
+  trackException,
+  setUserContextMethod,
+  clearUserContextMethod,
+  dependencyMethod,
+} from './utils';
 import trackEventDirective from './directives';
 
 function install(Vue, options) {
@@ -15,7 +22,16 @@ function install(Vue, options) {
   }
 
   // ---------------------------------------------------- router watch
-  const { router } = options;
+  const { router, axios } = options;
+
+  if (axios) {
+    axios.interceptors.response.use(
+      (config) => config,
+      (error) => {
+        dependencyMethod(error?.response);
+      }
+    );
+  }
 
   // Watch route event if router option is defined.
   if (router) {
@@ -27,13 +43,15 @@ function install(Vue, options) {
   }
 
   // -------------------------------------------------- track exceptions
-  Vue.config.errorHandler = error => {
+  Vue.config.errorHandler = (error) => {
     trackException(error);
   };
 
   Vue.directive(trackEventDirective.name, trackEventDirective);
   Vue.prototype.$meter = {
-    trackEvent: payload => trackEventMethod(payload, trackingConfiguration)
+    trackEvent: (payload) => trackEventMethod(payload, trackingConfiguration),
+    setUserContext: (payload) => setUserContextMethod(payload),
+    clearUserContext: () => clearUserContextMethod(),
   };
 
   // Enable only if we ever wanted to expose all app insight methods
