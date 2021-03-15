@@ -22,8 +22,8 @@ function install(Vue, options) {
   }
 
   // ---------------------------------------------------- router watch
-  const { router, axios } = options;
-
+  const { router, axios = null, $service = null } = options;
+  if ($service) axios = $service
   if (axios) {
     axios.interceptors.response.use(
       (config) => config,

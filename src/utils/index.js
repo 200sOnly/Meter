@@ -102,10 +102,15 @@ async function setupPageTracking(applicationName, router) {
   } catch (e) {
     isPrivate = false;
   }
-  const baseName = isPrivate
+
+  const isDarkModeEnabled = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+  let baseName = isPrivate
     ? `(Private) ${applicationName || '(Vue App)'}`
     : `${applicationName || '(Vue App)'}`;
 
+  baseName = isDarkModeEnabled ? `[DARK] - ${baseName}` : `${baseName}`
+  
   router.beforeEach((route, from, next) => {
     const name = `${baseName} / ${route.name}`;
     AppInsights.startTrackPage(name);
